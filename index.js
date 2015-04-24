@@ -23,20 +23,20 @@ function doStuff() {
                     station = value.properties,
                     difference;
 
-                if (tempStore[id]) {
+                if (currentState) {
                     console.log('exists!');
                     // Do math
-                    difference = station.docksAvailable - tempStore.lastAvailable;
+                    difference = station.docksAvailable - currentState.lastAvailable;
                     console.log(differnce);
 
                     if ( difference < 0 ) {
-                        tempStore.arrivals += difference * -1;
+                        currentState.arrivals += difference * -1;
                         console.log('arrival!');
                     } else {
-                        tempStore.departures += difference;
+                        currentState.departures += difference;
                         console.log('departure');
                     }
-                    console.log(tempStore);
+                    console.log(currentState);
                 } else {
                     tempStore[id] = {
                         "lastAvailable" : value.properties.docksAvailable,
