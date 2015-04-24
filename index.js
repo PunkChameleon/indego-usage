@@ -38,7 +38,7 @@ function doStuff() {
                     }
                     console.log(tempStore);
                 } else {
-                    tempStore = {
+                    tempStore[id] = {
                         "lastAvailable" : value.properties.docksAvailable,
                         "departures" : 0,
                         "arrivals" : 0
