@@ -3,22 +3,41 @@ var request = require('request'),
     path = require('path'),
     express = require('express'),
     app = express(),
-    tempStore = {};
+    tempStore = {
+        "JFK" : {
+            "lastAvailable"
+            "departures" : 0,
+            "arrivals" : 0,
+        }
+    };
 
-function compareId(stationId) {
-    console.log('DOING SOME COMPARE');    
-}
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/proxy.json', function (req, res) {
+function doStuff() {
     request('http://api.phila.gov/bike-share-stations/v1', function (error, response, body) {
           if (!error && response.statusCode == 200) {
 
-                    
-                  res.send(body)
+            _.each(body.features, function (value, key, list ) {
+                var id = value.properties.kioskId,
+                    currentState = tempStore[id];
+
+                if (tempStore[id]) {
+                    // Do math
+                } else {
+                    tempStore = {
+                        "departures" : 0,
+                        "arrivals" : 0
+                    }
+                
+                }
+
+            });          
+
+              // Send something
+              res.send(body)
           }
     });
-});
+}
 
 // Loop over data, store when changes
 
