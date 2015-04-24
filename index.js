@@ -8,7 +8,7 @@ var request = require('request'),
 function compareId(stationId) {
     console.log('DOING SOME COMPARE');    
 }
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/proxy.json', function (req, res) {
     request('http://api.phila.gov/bike-share-stations/v1', function (error, response, body) {
