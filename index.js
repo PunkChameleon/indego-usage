@@ -14,7 +14,6 @@ var request = require('request'),
 app.use(express.static(path.join(__dirname, 'public')));
 
 function doStuff() {
-    console.log('doing stuff');
     request('http://api.phila.gov/bike-share-stations/v1', function (error, response, body) {
           if (!error && response.statusCode == 200) {
 
@@ -25,7 +24,7 @@ function doStuff() {
                     difference;
 
                 if (tempStore[id]) {
-                    console.log('exists');
+                    console.log('exists!');
                     // Do math
                     difference = station.docksAvailable - tempStore.lastAvailable;
                     console.log(differnce);
@@ -56,7 +55,7 @@ function doStuff() {
     });
 }
 
-setInterval(doStuff, 5000);
+setInterval(doStuff, 30000);
 
 // Loop over data, store when changes
 
