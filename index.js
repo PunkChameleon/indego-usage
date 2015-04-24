@@ -27,7 +27,7 @@ function doStuff() {
                     console.log('exists!');
                     // Do math
                     difference = station.docksAvailable - currentState.lastAvailable;
-                    console.log(differnce);
+                    console.log(difference);
 
                     if ( difference < 0 ) {
                         currentState.arrivals += difference * -1;
