@@ -34,9 +34,10 @@ function doStuff() {
                         console.log('arrival!');
                     } else {
                         currentState.departures += difference;
-                        console.log('departure');
+                        if (difference) {
+                            console.log('departure');
+                        }
                     }
-                    console.log(currentState);
                 } else {
                     tempStore[id] = {
                         "lastAvailable" : value.properties.docksAvailable,
