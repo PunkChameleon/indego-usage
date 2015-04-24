@@ -1,1 +1,3 @@
-console.log( "hey" );
+var app = (function app {
+
+})();
