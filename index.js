@@ -68,11 +68,11 @@ function doStuff() {
               // Send something
 
           } else {
-            console.log(response.statusCode);
+            console.log(error);
           }
     });
 }
-setInterval(doStuff, 3000);
+setInterval(doStuff, 30000);
 
 // Loop over data, store when changes
 
