@@ -13,50 +13,66 @@ var request = require('request'),
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+function makeLogFun(station, currentState, type) {
+    var logger = [
+        station.name, 
+        "departures - ", 
+        currentState.departures,
+        "arrivals - ",
+        currentState.arrivals
+    ].join(" ");
+    console.log('----' + type + '----');
+    console.log(logger);
+
+}
+
 function doStuff() {
     request('http://api.phila.gov/bike-share-stations/v1', function (error, response, body) {
           if (!error && response.statusCode == 200) {
 
             _.each(JSON.parse(body).features, function (value, key, list ) {
+
                 var id = value.properties.kioskId,
-                    currentState = tempStore[id],
-                    station = value.properties,
+                    savedState = tempStore[id],
+                    currentState = value.properties,
                     difference;
 
-                if (currentState) {
-                    console.log('exists!');
-                    // Do math
-                    difference = station.docksAvailable - currentState.lastAvailable;
-                    console.log(difference);
+                if (savedState) {
+                    // Do math - Current Docks Available - Last Amount of Docks Available
+                    difference = currentState.docksAvailable - savedState.lastAvailable;
 
+                    // if difference is positive, then bikes have been added
                     if ( difference < 0 ) {
-                        currentState.arrivals += difference * -1;
-                        console.log('arrival!');
+                        savedState.arrivals = savedState.arrivals + Math.abs(difference);
+                        makeLogFun(currentState, savedState, "arrivals");
                     } else {
-                        currentState.departures += difference;
+                        savedState.departures = savedState.departures + difference;
                         if (difference) {
-                            console.log('departure');
+                            makeLogFun(currentState, savedState, "departure");
                         }
                     }
+
+                    savedState.lastAvailable = currentState.docksAvailable;
+
                 } else {
                     tempStore[id] = {
-                        "lastAvailable" : value.properties.docksAvailable,
+                        "name" : currentState.name,
+                        "lastAvailable" : currentState.docksAvailable,
                         "departures" : 0,
                         "arrivals" : 0
                     }
-
                 }
-
 
             });
 
               // Send something
 
+          } else {
+            console.log(response.statusCode);
           }
     });
 }
-
-setInterval(doStuff, 30000);
+setInterval(doStuff, 3000);
 
 // Loop over data, store when changes
 
