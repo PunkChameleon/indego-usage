@@ -1,26 +1,12 @@
 var request = require('request'),
     _ = require('underscore'),
     Parse = require('parse').Parse,
-    Kaiseki = require('kaiseki'),
     path = require('path'),
     express = require('express'),
     app = express(),
     APP_ID = "xDXlzlXTR1ZSb23k54Q8bxd4SXQJOP9PAmi1im0m",
     MASTER_KEY = "WhByAllYLAO1ntPpjoyguLRqlJdZgF4E5nkt9u96",
-    API_KEY = "wklBSbjwHnn4nfO3Xd8EIAehbQxvdPfXN2qEqoCX",
-    options = {
-        app_id:'xDXlzlXTR1ZSb23k54Q8bxd4SXQJOP9PAmi1im0m',
-        api_key:'wklBSbjwHnn4nfO3Xd8EIAehbQxvdPfXN2qEqoCX',
-        master_key: 'WhByAllYLAO1ntPpjoyguLRqlJdZgF4E5nkt9u96'
-    },
-    kaiseki = new Kaiseki(APP_ID, API_KEY),
-    tempStore = {
-        "JFK" : {
-            "lastAvailable" : 0,
-            "departures" : 0,
-            "arrivals" : 0
-        }
-    };
+    API_KEY = "wklBSbjwHnn4nfO3Xd8EIAehbQxvdPfXN2qEqoCX";
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -34,10 +20,6 @@ function doStuff() {
 
             _.each(JSON.parse(body).features, function (value, key, list ) {
                 var id = value.properties.kioskId,
-                    collection = "Stations",
-                    currentState = tempStore[id],
-//                    station = value.properties,
-//                    Station = new Parse.Object.extend("Station" ),
                     bikeStation = new BikeStation(),
                     query = new Parse.Query(BikeStation),
                     difference,
@@ -73,9 +55,8 @@ function doStuff() {
                                     return;
                                 }
                             });
-                        } else {
+                        } else if (results.length === 1) {
                             // kioskId should be unique and therefore return only one result.
-                            if(results.length === 1){
                                 updateObj = results[0];
                                 departures = updateObj.get("departures");
                                 arrivals = updateObj.get("arrivals");
@@ -106,10 +87,10 @@ function doStuff() {
                                         console.log(failStation);
                                     }
                                 });
-                            } else {
-                                console.error( "More than one object with kioskId" );
-                                return;
-                            }
+
+                        } else {
+                            console.error( "More than one object with kioskId" );
+                            return;
                         }
                     },
                     error: function(object, error) {
