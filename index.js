@@ -3,6 +3,7 @@ var request = require('request'),
     Parse = require('parse').Parse,
     path = require('path'),
     express = require('express'),
+    bikes = require('./routes/bikes'),
     app = express(),
     APP_ID = "xDXlzlXTR1ZSb23k54Q8bxd4SXQJOP9PAmi1im0m",
     MASTER_KEY = "WhByAllYLAO1ntPpjoyguLRqlJdZgF4E5nkt9u96",
@@ -44,7 +45,7 @@ function doStuff() {
                             for (var prop in insertObj) {
                                 bikeStation.set(prop, insertObj[prop]);
                             }
-                            console.log( bikeStation );
+
                             bikeStation.save(null, {
                                 success: function(station) {
                                     console.log("Inserted object: ", station.attributes);
@@ -79,11 +80,11 @@ function doStuff() {
 
                                 updateObj.save(null, {
                                     success: function(savedStation){
-                                        console.log("Saved: ", savedStation.attributes);
+//                                        console.log("Saved: ", savedStation.attributes);
                                         return savedStation;
                                     },
                                     error: function(failStation, error) {
-                                        console.log("Failed save: ", error);
+//                                        console.log("Failed save: ", error);
                                         console.log(failStation);
                                     }
                                 });
@@ -105,6 +106,8 @@ function doStuff() {
 }
 
 doStuff();
+
+app.get('/bikes', bikes.getBikeData);
 
 // Loop over data, store when changes
 
