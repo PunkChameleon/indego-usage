@@ -5,9 +5,9 @@ var express = require('express'),
 
 // Raw Call
 bikes.get('/bikes-raw.json', function(req, res, next) {
-        var BikeStation = Parse.Object.extend("BikeStation");
-        var query = new Parse.Query(BikeStation);
-        var resultsArray = [];
+        var BikeStation = Parse.Object.extend("BikeStation"),
+            query = new Parse.Query(BikeStation),
+            resultsArray = [];
 
         query.find({
             success: function(results) {
@@ -16,6 +16,28 @@ bikes.get('/bikes-raw.json', function(req, res, next) {
                 });
 
                 return res.send(resultsArray);
+            }
+        });
+});
+
+bikes.get('/top-arrivals.json', function(req, res, next) {
+        var BikeStation = Parse.Object.extend("BikeStation"),
+            query = new Parse.Query(BikeStation);
+
+        query.find({
+            success: function(results) {
+                return res.send(_.sortBy(results, "arrivals"));
+            }
+        });
+});
+
+bikes.get('/top-departures.json', function(req, res, next) {
+        var BikeStation = Parse.Object.extend("BikeStation"),
+            query = new Parse.Query(BikeStation);
+
+        query.find({
+            success: function(results) {
+                return res.send(_.sortBy(results, "departures"));
             }
         });
 });
