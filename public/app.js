@@ -1,5 +1,5 @@
 var app = (function app() {
-    $.get('/bikes', function(data) {
+    $.get('/bikes/bikes-raw.json', function(data) {
         var stationData,
             counter = 0;
         console.log(data);

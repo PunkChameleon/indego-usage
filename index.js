@@ -3,7 +3,6 @@ var request = require('request'),
     Parse = require('parse').Parse,
     path = require('path'),
     express = require('express'),
-    bikes = require('./routes/bikes'),
     app = express(),
     APP_ID = "xDXlzlXTR1ZSb23k54Q8bxd4SXQJOP9PAmi1im0m",
     MASTER_KEY = "WhByAllYLAO1ntPpjoyguLRqlJdZgF4E5nkt9u96",
@@ -37,6 +36,7 @@ function doStuff() {
                         if (!results.length) {
                             var insertObj = {
                                 "kioskId": id.toString(),
+                                "name" : value.properties.name,
                                 "lastAvailable": value.properties.docksAvailable,
                                 "departures": 0,
                                 "arrivals": 0
@@ -65,6 +65,7 @@ function doStuff() {
                                 difference = updateObj.get("lastAvailable") - recentLastAvailable;
 
                                 updateObj.set("lastAvailable", recentLastAvailable);
+                                updateObj.set("name", value.properties.name);
 
                                 if (difference < 0) {
                                     // Departure
@@ -80,11 +81,9 @@ function doStuff() {
 
                                 updateObj.save(null, {
                                     success: function(savedStation){
-//                                        console.log("Saved: ", savedStation.attributes);
                                         return savedStation;
                                     },
                                     error: function(failStation, error) {
-//                                        console.log("Failed save: ", error);
                                         console.log(failStation);
                                     }
                                 });
@@ -107,8 +106,7 @@ function doStuff() {
 
 doStuff();
 
-app.get('/bikes', bikes.getBikeData);
-
+app.use('/bikes', require('./routes/bikes'));
 // Loop over data, store when changes
 
 // Most taken bikes
