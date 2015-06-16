@@ -161,9 +161,58 @@ function doStuff() {
     });
 
     setTimeout(doStuff, 30000);
-}
+};
+
+function setGeoPoints() {
+    request('http://api.phila.gov/bike-share-stations/v1', function(error, response, body) {
+        if(!error && response.statusCode == 200) {
+            var query = new Parse.Query(BikeStation);
+            var updatedStations = [];
+            var indegoArray = JSON.parse(body ).features;
+
+            query.find({
+                success: function(results) {
+
+                    _.each(indegoArray, function(value, key, list) {
+                        var id = value.properties.kioskId;
+                        var lon = value.geometry.coordinates[0];
+                        var lat = value.geometry.coordinates[1];
+
+                        _.each(results, function(station, index, array) {
+                            if(id.toString() === station.get("kioskId")) {
+                                if(!station.has("lon")) {
+                                    station.set("lon", lon);
+                                }
+
+                                if(!station.has("lat")) {
+                                    station.set("lat", lat);
+                                }
+
+                                updatedStations.push(station);
+                            }
+                        });
+                    });
+
+                    Parse.Object.saveAll(updatedStations, {
+                        success: function(savedStations) {
+                            console.log("Geopoints saved");
+                        },
+                        error: function(err, result) {
+                            console.log("Error: ", err);
+                        }
+                    })
+                },
+                error: function(err) {
+                    console.log("There was a problem getting the stations. ", err);
+                }
+            });
+        }
+    });
+};
 
 doStuff();
+
+setTimeout(setGeoPoints, 10000);
 
 app.get('/bikes', bikes.getBikeData);
 
