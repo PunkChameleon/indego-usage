@@ -216,6 +216,8 @@ setTimeout(setGeoPoints, 10000);
 
 app.get('/bikes', bikes.getBikeData);
 
+//app.get('/map', map.getMapPoints);
+
 // Loop over data, store when changes
 
 // Most taken bikes
