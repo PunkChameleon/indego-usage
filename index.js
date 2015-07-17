@@ -65,15 +65,10 @@ function doStuff() {
                                     "arrivals": 0
                                 };
 
-                            console.log("indegoArray key: ", key);
-
                             // Loop through bike array results to find matching kiosk id
                             _.each(results, function (station, index, array) {
-                                console.log("results key: ", index);
-                                console.log("indegoId: ", id.toString(), "; ", "ParseId: ", station.get("kioskId"));
                                 if (id.toString() === station.get("kioskId")) {
                                     unique = false;
-                                    console.log("unique is false because we found a match!");
                                     departures = station.get("departures");
                                     arrivals = station.get("arrivals");
 
@@ -102,7 +97,6 @@ function doStuff() {
 
                             // If unique flag was not set to false we have a new station that needs to be saved to DB
                             if (unique) {
-                                console.log("unique is true");
                                 bikeStation.save(insertObj, {
                                     success: function(bikeStation) {
                                         console.log("Inserted new station.");
